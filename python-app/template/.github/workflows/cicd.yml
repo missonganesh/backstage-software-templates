@@ -1,4 +1,4 @@
-name: {{values.app_name}}-cicd
+name: ${{values.app_name}}-cicd
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: gkadam/{{values.app_name}}:${{ '${{ env.COMMIT_ID }}' }}
+          tags: missonganesh/${{values.app_name}}:${{ '${{ env.COMMIT_ID }}' }}
     outputs:
       commit_id: ${{ env.COMMIT_ID }}
 
@@ -42,7 +42,7 @@ jobs:
           echo ${{needs.ci.outputs.commit_id}}
           sudo apt-get update && sudo apt-get install -y python3-pip
           sudo apt-get install -y python3-pip yq
-          yq -Yi '.image.tag = "${{needs.ci.outputs.commit_id}}"' charts/{{values.app_name}}/values-{{values.app_env}}.yaml
+          yq -Yi '.image.tag = "${{needs.ci.outputs.commit_id}}"' charts/${{values.app_name}}/values-${{values.app_env}}.yaml
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
@@ -64,7 +64,7 @@ jobs:
             --grpc-web \
             --username admin \
             --password ${{ secrets.ARGOCD_PASSWORD }}
-          argocd app sync {{values.app_name}}
+          argocd app sync ${{values.app_name}}
 
 
 
