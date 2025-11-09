@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: missonganesh/${{values.app_name}}:${{ '${{ env.COMMIT_ID }}' }}
+          tags: gkadam/${{values.app_name}}:${{ '${{ env.COMMIT_ID }}' }}
     outputs:
       commit_id: ${{ env.COMMIT_ID }}
 
