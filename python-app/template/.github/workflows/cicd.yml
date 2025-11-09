@@ -11,6 +11,14 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
+      - name: Rename CI/CD file
+        run: |
+          mv .github/workflows/cicd.yml "${{ values.app_name }}-cicd.yaml"
+
+      - name: Rename Charts app directory
+        run: |
+          mv charts/python-app "${{ values.app_name }}"
+
       - name: Short Commit ID
         shell: bash
         run: |
