@@ -1,5 +1,5 @@
 replicaCount: 1
 image:
-  repository: missonganesh/${{values.app_name}}
+  repository: gkadam/${{values.app_name}}
   pullPolicy: IfNotPresent
   tag: ${{values.app_name}}-${{values.app_env}}-latest
