@@ -10,11 +10,13 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    outputs:
-      git_sha_short: ${{ steps.commit.outputs.short }}  
     steps:
-      - id: commit
-        uses: prompt/actions-commit-hash@v3
+
+      - name: Shorten commit id
+        shell: bash
+        run: |
+          echo "COMMIT_ID=${GITHUB_SHA::6}" >> "$GITHUB_ENV"
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -24,7 +26,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: gkadam/${{values.app_name}}:${{ steps.commit.outputs.short }}
+          tags: gkadam/${{values.app_name}}:${{ '${{ env.COMMIT_ID }}' }}
+    outputs:
+      commit_id: ${{ '${{ env.COMMIT_ID }}' }}
 
   cd:
     needs: ci
@@ -38,12 +42,12 @@ jobs:
           echo ${{ '${{needs.ci.outputs.commit_id}}' }}
           sudo apt-get update && sudo apt-get install -y python3-pip
           sudo apt-get install -y python3-pip yq
-          yq -Yi '.image.tag = "${{'${{needs.ci.outputs.git_sha_short}}'}}"' charts/${{values.app_name}}/values-${{values.app_env}}.yaml
+          yq -Yi '.image.tag = "${{'${{needs.ci.outputs.commit_id}}'}}"' charts/${{values.app_name}}/values-${{values.app_env}}.yaml
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'Updates values.yaml with commit ${{ '${{needs.ci.outputs.git_sha_short}' }}'
+          message: 'Updates values.yaml with commit ${{ '${{needs.ci.outputs.commit_id}' }}'
       
       - name: Install Argocd
         shell: bash
