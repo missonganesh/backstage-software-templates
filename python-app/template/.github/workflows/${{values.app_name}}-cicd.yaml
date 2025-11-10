@@ -39,15 +39,15 @@ jobs:
       - name: Modify values file
         shell: bash
         run: | 
-          echo ${{needs.ci.outputs.commit_id}}
+          echo ${{ '${{needs.ci.outputs.commit_id}}' }}
           sudo apt-get update && sudo apt-get install -y python3-pip
           sudo apt-get install -y python3-pip yq
-          yq -Yi '.image.tag = "${{needs.ci.outputs.commit_id}}"' charts/${{values.app_name}}/values-${{values.app_env}}.yaml
+          yq -Yi '.image.tag = "${{'${{needs.ci.outputs.commit_id}}'}}"' charts/${{values.app_name}}/values-${{values.app_env}}.yaml
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'Updates values.yaml with commit ${{needs.ci.outputs.commit_id}}'
+          message: 'Updates values.yaml with commit ${{ '${{needs.ci.outputs.commit_id}}' }}'
 
       - name: Install Argocd
         shell: bash
