@@ -60,7 +60,7 @@ jobs:
         shell: bash
         run: |
           argocd login argocd-server.argocd \
-	    --insecure  \
+	    --insecure \
 	    --grpc-web \
 	    --username admin \
 	    --password  ${{ '${{ secrets.ARGOCD_PASSWORD }}' }}
